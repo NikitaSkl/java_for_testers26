@@ -1,0 +1,20 @@
+package tests.models;
+
+public record Group(String name, String header, String footer) {
+
+    public Group() {
+        this("", "", "");
+    }
+
+    public Group withName(String name) {
+        return new Group(name,this.header,this.footer);
+    }
+
+    public Group withHeader(String name) {
+        return new Group(this.name,header,this.footer);
+    }
+
+    public Group withFooter(String name) {
+        return new Group(this.name,this.header,footer);
+    }
+}
