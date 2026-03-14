@@ -1,21 +1,21 @@
-package tests;
+package ru.stqa.addressbook.managers;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import tests.models.Group;
+import ru.stqa.addressbook.models.Group;
+import ru.stqa.addressbook.tests.TestBase;
 
 import java.time.Duration;
 
-public class TestBase {
-    protected static WebDriver driver;
+public class ApplicationManager {
+    public static WebDriver driver;
     public static WebDriverWait wait;
 
-    protected static void createGroup(Group group) {
+    public void createGroup(Group group) {
         driver.findElement(By.name("new")).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("group_name")));
         driver.findElement(By.name("group_name")).click();
@@ -27,19 +27,18 @@ public class TestBase {
         driver.findElement(By.name("submit")).click();
     }
 
-    protected static void returnToGroupPage() {
+    public void returnToGroupPage() {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("group page")));
         driver.findElement(By.linkText("group page")).click();
     }
 
-    protected static void removeGroup() {
+    public void removeGroup() {
         driver.findElement(By.name("selected[]")).click();
         driver.findElement(By.name("delete")).click();
         driver.findElement(By.linkText("group page")).click();
     }
 
-    @BeforeEach
-    public void setUp() {
+    public void init() {
         if (driver == null) {
             driver = new ChromeDriver();
             wait = new WebDriverWait(driver, Duration.ofSeconds(2));
@@ -52,23 +51,23 @@ public class TestBase {
         }
     }
 
-    protected boolean isElementPresent(By locator) {
+    public boolean isGroupPresent(TestBase testBase) {
+        return testBase.app.isElementPresent(By.name("selected[]"));
+    }
+
+    public void openGroupsPage(TestBase testBase) {
+        if (!testBase.app.isElementPresent(By.name("new"))) {
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("groups")));
+            driver.findElement(By.linkText("groups")).click();
+        }
+    }
+
+    public boolean isElementPresent(By locator) {
         try {
             driver.findElement(locator);
             return true;
         } catch (NoSuchElementException exception) {
             return false;
         }
-    }
-
-    protected void openGroupsPage() {
-        if (!isElementPresent(By.name("new"))) {
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("groups")));
-            driver.findElement(By.linkText("groups")).click();
-        }
-    }
-
-    protected boolean isGroupPresent() {
-        return isElementPresent(By.name("selected[]"));
     }
 }
