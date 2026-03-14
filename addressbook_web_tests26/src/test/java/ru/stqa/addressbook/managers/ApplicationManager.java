@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
@@ -28,9 +29,15 @@ public class ApplicationManager {
         return groupHelper;
     }
 
-    public void init() {
+    public void init(String browser) {
         if (driver == null) {
-            driver = new ChromeDriver();
+            if ("chrome".equals(browser)){
+                driver = new ChromeDriver();
+            }
+            else if ("edge".equals(browser)){
+                driver=new EdgeDriver();
+            }
+            else throw new IllegalArgumentException(String.format("Unknown browser: %s",browser));
             wait = new WebDriverWait(driver, Duration.ofSeconds(2));
             Runtime.getRuntime().addShutdownHook(new Thread(driver::quit));
             driver.get("http://localhost/addressbook");
