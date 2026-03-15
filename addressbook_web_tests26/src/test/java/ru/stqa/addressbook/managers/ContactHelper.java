@@ -15,6 +15,27 @@ public class ContactHelper extends HelperBase{
         submitContactCreation();
         returnToHomePage();
     }
+    public void removeContact(){
+        openHomePage();
+        selectContact();
+        deleteSelectedContacts();
+    }
+    public boolean isContactPresent(){
+        manager.wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("home")));
+        return isElementPresent(By.name("selected[]"));
+    }
+
+    private void deleteSelectedContacts() {
+        click(By.xpath("//input[@value=\"Delete\"]"));
+    }
+
+    private void selectContact() {
+        click(By.name("selected[]"));
+    }
+
+    private void openHomePage() {
+        manager.wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("home"))).click();
+    }
 
     private void fillContactInfo(Contact contact) {
         type(By.name("firstname"),contact.firstName());
@@ -32,7 +53,6 @@ public class ContactHelper extends HelperBase{
     }
 
     private void initContactCreation() {
-        manager.wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("add new")));
-        click(By.linkText("add new"));
+        manager.wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("add new"))).click();
     }
 }

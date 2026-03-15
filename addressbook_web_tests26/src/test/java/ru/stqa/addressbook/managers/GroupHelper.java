@@ -66,7 +66,7 @@ public class GroupHelper extends HelperBase {
     }
 
     public void openGroupsPage() {
-        if (!manager.isElementPresent(By.name("new"))) {
+        if (!isElementPresent(By.name("new"))) {
             manager.wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("groups")));
             click(By.linkText("groups"));
         }
@@ -86,6 +86,8 @@ public class GroupHelper extends HelperBase {
     }
 
     public boolean isGroupPresent() {
-        return manager.isElementPresent(By.name("selected[]"));
+        manager.wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("groups"))).click();
+        return isElementPresent(By.name("selected[]"));
     }
+
 }
