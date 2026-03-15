@@ -14,6 +14,14 @@ public class ApplicationManager {
     public WebDriverWait wait;
     private LoginHelper session;
     public GroupHelper groupHelper;
+    public ContactHelper contactHelper;
+
+    public ContactHelper contacts(){
+        if (contactHelper==null){
+            contactHelper=new ContactHelper(this);
+        }
+        return contactHelper;
+    }
 
     public LoginHelper session() {
         if (session == null) {
