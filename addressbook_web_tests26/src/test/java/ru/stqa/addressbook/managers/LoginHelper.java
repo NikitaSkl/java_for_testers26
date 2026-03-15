@@ -1,17 +1,16 @@
 package ru.stqa.addressbook.managers;
 
 import org.openqa.selenium.By;
+import ru.stqa.addressbook.tests.TestBase;
 
-public class LoginHelper {
-    public ApplicationManager manager;
-    public LoginHelper(ApplicationManager app){
-        this.manager =app;
+public class LoginHelper extends HelperBase {
+    public LoginHelper(ApplicationManager manager){
+        super(manager);
     }
 
     public void login(String userName, String password) {
-        manager.driver.findElement(By.name("user")).click();
-        manager.driver.findElement(By.name("user")).sendKeys(userName);
-        manager.driver.findElement(By.name("pass")).sendKeys(password);
-        manager.driver.findElement(By.xpath("(//input[@value=\'Login\'])[1]")).click();
+        type(By.name("user"),userName);
+        type(By.name("pass"),password);
+        click(By.xpath("(//input[@value=\'Login\'])[1]"));
     }
 }
