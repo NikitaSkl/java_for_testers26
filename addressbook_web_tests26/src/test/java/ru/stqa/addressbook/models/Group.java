@@ -10,11 +10,11 @@ public record Group(String name, String header, String footer) {
         return new Group(name,this.header,this.footer);
     }
 
-    public Group withHeader(String name) {
-        return new Group(this.name,header,this.footer);
+    public Group withHeader(String header) {
+        return new Group(this.name, header,this.footer);
     }
 
-    public Group withFooter(String name) {
-        return new Group(this.name,this.header,footer);
+    public Group withFooter(String footer) {
+        return new Group(this.name,this.header, footer);
     }
 }

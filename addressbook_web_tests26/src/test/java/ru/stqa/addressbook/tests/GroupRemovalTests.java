@@ -4,18 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.stqa.addressbook.models.Group;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class GroupRemovalTests extends TestBase {
-
-    public static List<Group> randomGroups() {
-        var result= new ArrayList<Group>(5);
-        for (int i = 0; i < 3 ; i++) {
-            result.add(new Group(randomString(),randomString(),randomString()));
-        }
-        return result;
-    }
 
     @Test
     public void canRemoveGroup() {
