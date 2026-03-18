@@ -30,9 +30,19 @@ public class GroupHelper extends HelperBase {
         selectGroup();
         initGroupModification();
         clearGroupName();
+        clearGroupHeader();
+        clearGroupFooter();
         fillGroupInfo(group);
         submitGroupModification();
         returnToGroupPage();
+    }
+
+    private void clearGroupFooter() {
+        manager.driver.findElement(By.name("group_footer")).clear();
+    }
+
+    private void clearGroupHeader() {
+        manager.driver.findElement(By.name("group_header")).clear();
     }
 
     private void clearGroupName() {
