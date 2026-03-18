@@ -18,8 +18,12 @@ public class ContactHelper extends HelperBase {
 
     public void removeContact() {
         openHomePage();
-        selectContact();
-        deleteSelectedContacts();
+        initContactModification();
+        initContactRemoval();
+    }
+
+    private void initContactRemoval() {
+        click(By.xpath("//input[@value=\"Delete\" and @name=\"update\"]"));
     }
 
     public void modifyContact(Contact contact) {
@@ -30,6 +34,15 @@ public class ContactHelper extends HelperBase {
         fillContactInfo(contact);
         submitContactModification();
         returnToHomePage();
+    }
+    public void removeAllContacts() {
+        openHomePage();
+        selectAllContacts();
+        initRemovalOfSelectedContacts();
+    }
+
+    private void selectAllContacts() {
+        click(By.id("MassCB"));
     }
 
     private void clearLastName() {
@@ -53,7 +66,7 @@ public class ContactHelper extends HelperBase {
         return isElementPresent(By.name("selected[]"));
     }
 
-    private void deleteSelectedContacts() {
+    private void initRemovalOfSelectedContacts() {
         click(By.xpath("//input[@value=\"Delete\"]"));
     }
 
@@ -91,4 +104,6 @@ public class ContactHelper extends HelperBase {
         openHomePage();
         return manager.driver.findElements(By.name("selected[]")).size();
     }
+
+
 }
