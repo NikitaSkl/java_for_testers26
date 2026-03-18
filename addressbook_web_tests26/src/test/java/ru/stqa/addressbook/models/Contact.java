@@ -4,11 +4,11 @@ public record Contact(String firstName, String lastName, String address, String 
     public Contact() {
         this("","","","","");
     }
-    public Contact withFirstName(Contact contact){
-        return new Contact(contact.firstName,this.lastName,this.address,this.email,this.mobile);
+    public Contact withFirstName(String name){
+        return new Contact(name,this.lastName,this.address,this.email,this.mobile);
     }
 
-    public Contact withLastName(Contact contact){
-        return new Contact(this.firstName,contact.lastName,this.address,this.email,this.mobile);
+    public Contact withLastName(String name){
+        return new Contact(this.firstName,name,this.address,this.email,this.mobile);
     }
 }

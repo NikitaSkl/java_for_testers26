@@ -20,6 +20,32 @@ public class ContactHelper extends HelperBase{
         selectContact();
         deleteSelectedContacts();
     }
+    public void modifyContact(Contact contact) {
+        openHomePage();
+        initContactModification();
+        clearFirstName();
+        clearLastName();
+        fillContactInfo(contact);
+        submitContactModification();
+        returnToHomePage();
+    }
+
+    private void clearLastName() {
+        manager.driver.findElement(By.name("firstname")).clear();
+    }
+
+    private void clearFirstName() {
+        manager.driver.findElement(By.name("lastname")).clear();
+    }
+
+    private void submitContactModification() {
+        click(By.name("update"));
+    }
+
+    private void initContactModification() {
+        click(By.xpath("//img[@title=\"Edit\"]"));
+    }
+
     public boolean isContactPresent(){
         manager.wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("home")));
         return isElementPresent(By.name("selected[]"));
@@ -55,4 +81,6 @@ public class ContactHelper extends HelperBase{
     private void initContactCreation() {
         manager.wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("add new"))).click();
     }
+
+
 }
