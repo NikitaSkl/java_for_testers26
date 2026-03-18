@@ -16,6 +16,14 @@ public class TestBase {
         }
         return result;
     }
+    public static String randomStringOfInts() {
+        int length=new Random().nextInt(11);
+        String result="";
+        for (int i = 0; i < length ; i++) {
+            result=result+(char)('0'+(new Random().nextInt(9)));
+        }
+        return result;
+    }
 
     @BeforeEach
     public void setUp() {

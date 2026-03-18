@@ -4,8 +4,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import ru.stqa.addressbook.models.Contact;
 
-public class ContactHelper extends HelperBase{
-    public ContactHelper(ApplicationManager manager){
+public class ContactHelper extends HelperBase {
+    public ContactHelper(ApplicationManager manager) {
         super(manager);
     }
 
@@ -15,11 +15,13 @@ public class ContactHelper extends HelperBase{
         submitContactCreation();
         returnToHomePage();
     }
-    public void removeContact(){
+
+    public void removeContact() {
         openHomePage();
         selectContact();
         deleteSelectedContacts();
     }
+
     public void modifyContact(Contact contact) {
         openHomePage();
         initContactModification();
@@ -46,7 +48,7 @@ public class ContactHelper extends HelperBase{
         click(By.xpath("//img[@title=\"Edit\"]"));
     }
 
-    public boolean isContactPresent(){
+    public boolean isContactPresent() {
         manager.wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("home")));
         return isElementPresent(By.name("selected[]"));
     }
@@ -60,16 +62,19 @@ public class ContactHelper extends HelperBase{
     }
 
     private void openHomePage() {
-        manager.wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("home"))).click();
+        if (!isElementPresent(By.xpath("//img[@title=\"Edit\"]"))) {
+            manager.wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("home"))).click();
+        }
     }
 
     private void fillContactInfo(Contact contact) {
-        type(By.name("firstname"),contact.firstName());
-        type(By.name("lastname"),contact.lastName());
+        type(By.name("firstname"), contact.firstName());
+        type(By.name("lastname"), contact.lastName());
         type(By.name("address"), contact.address());
         type(By.name("mobile"), contact.mobile());
         type(By.name("email"), contact.email());
     }
+
     private void returnToHomePage() {
         click(By.linkText("home page"));
     }
@@ -82,5 +87,8 @@ public class ContactHelper extends HelperBase{
         manager.wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("add new"))).click();
     }
 
-
+    public int getContactsCount() {
+        openHomePage();
+        return manager.driver.findElements(By.name("selected[]")).size();
+    }
 }
