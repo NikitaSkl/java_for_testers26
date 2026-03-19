@@ -4,22 +4,29 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.stqa.addressbook.models.Group;
 
+import java.util.List;
+import java.util.Random;
+
 public class GroupRemovalTests extends TestBase {
 
     @Test
     public void canRemoveGroup() {
         if (!app.groups().isGroupPresent()) {
-            app.groups().createGroup(new Group("name", "header", "footer"));
+            app.groups().createGroup(new Group().withName("name").withHeader("header").withFooter("footer"));
         }
-        var groupNumber=app.groups().getCount();
-        app.groups().removeGroup();
-        var newGroupNumber=app.groups().getCount();
-        Assertions.assertEquals(groupNumber-1,newGroupNumber);
+        var random=new Random();
+        var groupList=app.groups().getList();
+        var index=random.nextInt(groupList.size());
+        app.groups().removeGroup(groupList.get(index));
+        var newGroupList=app.groups().getList();
+        groupList.remove(index);
+        var expectedList=groupList;
+        Assertions.assertEquals(expectedList,newGroupList);
     }
     @Test
     public void canRemoveAllGroups(){
         if (!app.groups().isGroupPresent()) {
-            app.groups().createGroup(new Group("name", "header", "footer"));
+            app.groups().createGroup(new Group().withName("name").withHeader("header").withFooter("footer"));
         }
         app.groups().removeAllGroups();
         Assertions.assertEquals(0,app.groups().getCount());

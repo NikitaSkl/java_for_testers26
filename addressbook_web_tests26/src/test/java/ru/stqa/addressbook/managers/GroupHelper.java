@@ -4,6 +4,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import ru.stqa.addressbook.models.Group;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GroupHelper extends HelperBase {
 
     public GroupHelper(ApplicationManager manager) {
@@ -18,16 +21,16 @@ public class GroupHelper extends HelperBase {
         returnToGroupPage();
     }
 
-    public void removeGroup() {
+    public void removeGroup(Group group) {
         openGroupsPage();
-        selectGroup();
+        selectGroup(group);
         deleteSelectedGroups();
         returnToGroupPage();
     }
 
     public void modifyGroup(Group group) {
         openGroupsPage();
-        selectGroup();
+        selectFirstGroup();
         initGroupModification();
         clearGroupName();
         clearGroupHeader();
@@ -35,6 +38,10 @@ public class GroupHelper extends HelperBase {
         fillGroupInfo(group);
         submitGroupModification();
         returnToGroupPage();
+    }
+
+    private void selectFirstGroup() {
+        click(By.name(("selected[]")));
     }
 
     private void clearGroupFooter() {
@@ -57,8 +64,8 @@ public class GroupHelper extends HelperBase {
         click(By.name("delete"));
     }
 
-    private void selectGroup() {
-        click(By.name("selected[]"));
+    public void selectGroup(Group group) {
+        click(By.xpath(String.format("//input[@value='%s']",group.id())));
     }
 
     private void initGroupCreation() {
@@ -116,5 +123,17 @@ public class GroupHelper extends HelperBase {
         for (var checkbox:checkboxes){
             checkbox.click();
         }
+    }
+
+    public List<Group> getList() {
+        openGroupsPage();
+        var result=new ArrayList<Group>();
+        var spans=manager.driver.findElements(By.className("group"));
+        for (var span:spans){
+            var id=span.findElement(By.name("selected[]")).getAttribute("value");
+            var groupName=span.getText();
+            result.add(new Group().withName(groupName).withId(id));
+        }
+        return result;
     }
 }
