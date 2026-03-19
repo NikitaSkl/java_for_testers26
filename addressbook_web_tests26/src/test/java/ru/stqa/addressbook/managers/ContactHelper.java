@@ -100,7 +100,7 @@ public class ContactHelper extends HelperBase {
         manager.wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("add new"))).click();
     }
 
-    public int getContactsCount() {
+    public int getCount() {
         openHomePage();
         return manager.driver.findElements(By.name("selected[]")).size();
     }

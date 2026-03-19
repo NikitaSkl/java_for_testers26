@@ -11,9 +11,9 @@ public class ContactRemovalTests extends TestBase{
         if (!app.contacts().isContactPresent()){
             app.contacts().createContact(new Contact());
         }
-        var contactsCount=app.contacts().getContactsCount();
+        var contactsCount=app.contacts().getCount();
         app.contacts().removeContact();
-        Assertions.assertEquals(contactsCount-1,app.contacts().getContactsCount());
+        Assertions.assertEquals(contactsCount-1,app.contacts().getCount());
     }
     @Test
     public void canRemoveAllContacts(){
@@ -21,6 +21,6 @@ public class ContactRemovalTests extends TestBase{
             app.contacts().createContact(new Contact());
         }
         app.contacts().removeAllContacts();
-        Assertions.assertEquals(0, app.contacts().getContactsCount());
+        Assertions.assertEquals(0, app.contacts().getCount());
     }
 }
