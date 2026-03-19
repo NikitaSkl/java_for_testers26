@@ -9,20 +9,22 @@ public class TestBase {
     public static ApplicationManager app;
 
     public static String randomString() {
-        int length=new Random().nextInt(15);
-        String result="";
+        var random=new Random();
+        int length=random.nextInt(15);
+        var result=new StringBuilder();
         for (int i = 0; i < length ; i++) {
-            result=result+(char)('a'+(new Random().nextInt(26)));
+            result.append((char)('a'+(random.nextInt(26))));
         }
-        return result;
+        return result.toString();
     }
     public static String randomStringOfInts() {
-        int length=new Random().nextInt(11);
-        String result="";
+        var random=new Random();
+        int length=random.nextInt(11);
+        var result=new StringBuilder();
         for (int i = 0; i < length ; i++) {
-            result=result+(char)('0'+(new Random().nextInt(9)));
+            result.append((char)('0'+(new Random().nextInt(9))));
         }
-        return result;
+        return result.toString();
     }
 
     @BeforeEach
