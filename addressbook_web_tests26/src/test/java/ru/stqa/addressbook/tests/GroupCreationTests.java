@@ -1,7 +1,6 @@
 package ru.stqa.addressbook.tests;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import ru.stqa.addressbook.models.Group;
@@ -29,12 +28,12 @@ public class GroupCreationTests extends TestBase {
     public static List<Group> groupProvider() {
         var result = new ArrayList<Group>();
         for (int i = 0; i < 3; i++) {
-            result.add(new Group(randomString(), randomString(), randomString()));
+            result.add(new Group().withName(randomString()).withHeader(randomString()).withFooter(randomString()));
         }
         for (var name : List.of("", "some name")) {
             for (var header : List.of("", "some header")) {
                 for (var footer : List.of("", "some footer")) {
-                    result.add(new Group(name, header, footer));
+                    result.add(new Group("",name, header, footer));
                 }
             }
         }
