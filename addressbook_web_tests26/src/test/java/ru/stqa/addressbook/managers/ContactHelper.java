@@ -4,6 +4,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import ru.stqa.addressbook.models.Contact;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ContactHelper extends HelperBase {
     public ContactHelper(ApplicationManager manager) {
         super(manager);
@@ -16,9 +19,9 @@ public class ContactHelper extends HelperBase {
         returnToHomePage();
     }
 
-    public void removeContact() {
+    public void removeContact(Contact contact) {
         openHomePage();
-        initContactModification();
+        initContactModification(contact);
         initContactRemoval();
     }
 
@@ -26,12 +29,12 @@ public class ContactHelper extends HelperBase {
         click(By.xpath("//input[@value=\"Delete\" and @name=\"update\"]"));
     }
 
-    public void modifyContact(Contact contact) {
+    public void modifyContact(Contact contact, Contact modifiedContact) {
         openHomePage();
-        initContactModification();
+        initContactModification(contact);
         clearFirstName();
         clearLastName();
-        fillContactInfo(contact);
+        fillContactInfo(modifiedContact);
         submitContactModification();
         returnToHomePage();
     }
@@ -57,8 +60,9 @@ public class ContactHelper extends HelperBase {
         click(By.name("update"));
     }
 
-    private void initContactModification() {
-        click(By.xpath("//img[@title=\"Edit\"]"));
+    private void initContactModification(Contact contact) {
+        var tr=manager.driver.findElement(By.xpath(String.format("//tr[@name='entry' and .//input[@id='%s']]",contact.id())));
+        tr.findElement(By.xpath(".//a[contains(@href, 'edit.php')]")).click();
     }
 
     public boolean isContactPresent() {
@@ -106,4 +110,23 @@ public class ContactHelper extends HelperBase {
     }
 
 
+    public List<Contact> getList() {
+        openHomePage();
+        var result=new ArrayList<Contact>();
+        var trs=manager.driver.findElements(By.name("entry"));
+        for (var tr:trs){
+            var id=tr.findElement(By.name("selected[]")).getAttribute("value");
+            var lastName=tr.findElement(By.xpath(".//td[2]")).getText();
+            var firstName=tr.findElement(By.xpath(".//td[3]")).getText();
+            var address=tr.findElement(By.xpath(".//td[4]")).getText();
+            var phone=tr.findElement(By.xpath(".//td[6]")).getText();
+            result.add(new Contact()
+                    .withId(id)
+                    .withFirstName(firstName)
+                    .withLastName(lastName)
+                    .withAddress(address)
+                    .withMobile(phone));
+        }
+        return result;
+    }
 }
