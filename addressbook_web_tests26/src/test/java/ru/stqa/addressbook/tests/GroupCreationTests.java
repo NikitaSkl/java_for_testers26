@@ -6,23 +6,31 @@ import org.junit.jupiter.params.provider.MethodSource;
 import ru.stqa.addressbook.models.Group;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 
 public class GroupCreationTests extends TestBase {
     @ParameterizedTest
     @MethodSource("groupProvider")
     public void canCreateMultipleGroups(Group group) {
-        var groupNumber = app.groups().getCount();
+        var groupList=app.groups().getList();
         app.groups().createGroup(group);
-        Assertions.assertEquals(groupNumber + 1, app.groups().getCount());
+        var actualGroupList=app.groups().getList();
+        Comparator<Group> compareById = ((group1,group2)->Integer.parseInt(group1.id())-Integer.parseInt(group2.id()));
+        actualGroupList.sort(compareById);
+        groupList.add(group.withId(actualGroupList.get(actualGroupList.size()-1).id()).withFooter("").withHeader(""));
+        groupList.sort(compareById);
+        Assertions.assertEquals(groupList, actualGroupList);
     }
 
     @ParameterizedTest
     @MethodSource("negativeGroupProvider")
     public void canNotCreateGroup(Group group){
-        var groupNumber = app.groups().getCount();
+        var groupList=app.groups().getList();
         app.groups().createGroup(group);
-        Assertions.assertEquals(groupNumber, app.groups().getCount());
+        var actualGroupList=app.groups().getList();
+        Assertions.assertEquals(groupList, actualGroupList);
     }
 
     public static List<Group> groupProvider() {

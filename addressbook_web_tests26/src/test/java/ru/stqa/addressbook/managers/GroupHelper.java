@@ -28,20 +28,16 @@ public class GroupHelper extends HelperBase {
         returnToGroupPage();
     }
 
-    public void modifyGroup(Group group) {
+    public void modifyGroup(Group groupToModify,Group groupData) {
         openGroupsPage();
-        selectFirstGroup();
+        selectGroup(groupToModify);
         initGroupModification();
         clearGroupName();
         clearGroupHeader();
         clearGroupFooter();
-        fillGroupInfo(group);
+        fillGroupInfo(groupData);
         submitGroupModification();
         returnToGroupPage();
-    }
-
-    private void selectFirstGroup() {
-        click(By.name(("selected[]")));
     }
 
     private void clearGroupFooter() {

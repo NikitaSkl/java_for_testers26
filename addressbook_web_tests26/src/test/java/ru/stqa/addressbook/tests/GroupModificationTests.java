@@ -1,7 +1,12 @@
 package ru.stqa.addressbook.tests;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.stqa.addressbook.models.Group;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Random;
 
 public class GroupModificationTests extends TestBase{
 
@@ -10,6 +15,15 @@ public class GroupModificationTests extends TestBase{
         if (!app.groups().isGroupPresent()) {
             app.groups().createGroup(new Group().withName("name").withHeader("header").withFooter("footer"));
         }
-        app.groups().modifyGroup(new Group().withName("modified name").withHeader("modified header").withFooter("modified footer"));
+        var groupList=app.groups().getList();
+        var random=new Random();
+        var index=random.nextInt(groupList.size());
+        app.groups().modifyGroup(groupList.get(index),new Group().withName("modified name"));
+        Comparator<Group> compareById = ((group1,group2)->Integer.parseInt(group1.id())-Integer.parseInt(group2.id()));
+        var newGroupList=app.groups().getList();
+        newGroupList.sort(compareById);
+        groupList.set(index,new Group().withName("modified name").withId(groupList.get(index).id()));
+        groupList.sort(compareById);
+        Assertions.assertEquals(groupList,newGroupList);
     }
 }
