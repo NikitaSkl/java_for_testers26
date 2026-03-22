@@ -6,6 +6,7 @@ import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.Properties;
 
 public class ApplicationManager {
     public WebDriver driver;
@@ -13,6 +14,7 @@ public class ApplicationManager {
     private LoginHelper session;
     public GroupHelper groupHelper;
     public ContactHelper contactHelper;
+    private Properties properties;
 
     public ContactHelper contacts(){
         if (contactHelper==null){
@@ -35,7 +37,8 @@ public class ApplicationManager {
         return groupHelper;
     }
 
-    public void init(String browser) {
+    public void init(String browser, Properties properties) {
+        this.properties=properties;
         if (driver == null) {
             if ("chrome".equals(browser)){
                 driver = new ChromeDriver();
@@ -46,8 +49,8 @@ public class ApplicationManager {
             else throw new IllegalArgumentException(String.format("Unknown browser: %s",browser));
             wait = new WebDriverWait(driver, Duration.ofSeconds(2));
             Runtime.getRuntime().addShutdownHook(new Thread(driver::quit));
-            driver.get("http://localhost/addressbook");
-            session().login("admin", "secret");
+            driver.get(properties.getProperty("web.baseUrl"));
+            session().login(properties.getProperty("web.user"), properties.getProperty("web.password"));
         }
     }
 
