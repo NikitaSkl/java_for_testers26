@@ -1,5 +1,6 @@
 package ru.stqa.addressbook.tests;
 
+import common.CommonFunctions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.stqa.addressbook.models.Contact;
@@ -17,8 +18,8 @@ public class ContactModificationTests extends TestBase {
         int index;
         if (app.contacts().getCount() == 1) index = 0;
         else index = new Random().nextInt(contactList.size() - 1);
-        String newFirstName = randomString(), newLastname = randomString();
-        app.contacts().modifyContact(contactList.get(index), new Contact().withFirstName(newFirstName).withLastName(newLastname));
+        String newFirstName = CommonFunctions.randomString(), newLastname = CommonFunctions.randomString();
+        app.contacts().modifyContact(contactList.get(index), new Contact().withFirstName(newFirstName).withLastName(newLastname).withPhoto(randomFile("src/test/resources/images")));
         Comparator<Contact> compareById = (c1, c2) -> Integer.parseInt(c1.id()) - Integer.parseInt(c2.id());
         contactList.set(index, contactList.get(index).withFirstName(newFirstName).withLastName(newLastname));
         contactList.sort(compareById);

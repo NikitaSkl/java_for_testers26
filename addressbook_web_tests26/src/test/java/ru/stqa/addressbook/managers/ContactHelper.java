@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import ru.stqa.addressbook.models.Contact;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,11 +50,11 @@ public class ContactHelper extends HelperBase {
     }
 
     private void clearLastName() {
-        manager.driver.findElement(By.name("firstname")).clear();
+        manager.driver.findElement(By.name("lastname")).clear();
     }
 
     private void clearFirstName() {
-        manager.driver.findElement(By.name("lastname")).clear();
+        manager.driver.findElement(By.name("firstname")).clear();
     }
 
     private void submitContactModification() {
@@ -90,6 +91,11 @@ public class ContactHelper extends HelperBase {
         type(By.name("address"), contact.address());
         type(By.name("mobile"), contact.mobile());
         type(By.name("email"), contact.email());
+        attach(By.name("photo"),contact.photo());
+    }
+
+    private void attach(By locator,String photo) {
+        type(locator, Paths.get(photo).toAbsolutePath().toString());
     }
 
     private void returnToHomePage() {
