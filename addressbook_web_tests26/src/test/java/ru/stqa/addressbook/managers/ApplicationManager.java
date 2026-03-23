@@ -16,7 +16,14 @@ public class ApplicationManager {
     public ContactHelper contactHelper;
     public Properties properties;
     public JdbcHelper jdbc;
+    public HibernateHelper hbm;
 
+    public HibernateHelper hbm(){
+        if (hbm ==null){
+            hbm =new HibernateHelper(this);
+        }
+        return hbm;
+    }
     public JdbcHelper jdbc(){
         if (jdbc ==null){
             jdbc =new JdbcHelper(this);
