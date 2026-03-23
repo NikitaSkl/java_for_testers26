@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static common.CommonFunctions.randomString;
+import static ru.stqa.addressbook.common.CommonFunctions.randomString;
 
 public class Generator {
 

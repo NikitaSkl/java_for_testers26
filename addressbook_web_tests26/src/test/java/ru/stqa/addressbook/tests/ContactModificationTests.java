@@ -1,6 +1,6 @@
 package ru.stqa.addressbook.tests;
 
-import common.CommonFunctions;
+import ru.stqa.addressbook.common.CommonFunctions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.stqa.addressbook.models.Contact;
