@@ -11,10 +11,18 @@ import java.util.Properties;
 public class ApplicationManager {
     public WebDriver driver;
     public WebDriverWait wait;
-    private LoginHelper session;
+    public LoginHelper session;
     public GroupHelper groupHelper;
     public ContactHelper contactHelper;
-    private Properties properties;
+    public Properties properties;
+    public JdbcHelper jdbc;
+
+    public JdbcHelper jdbc(){
+        if (jdbc ==null){
+            jdbc =new JdbcHelper(this);
+        }
+        return jdbc;
+    }
 
     public ContactHelper contacts(){
         if (contactHelper==null){

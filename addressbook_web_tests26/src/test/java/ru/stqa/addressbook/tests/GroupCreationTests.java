@@ -21,12 +21,13 @@ public class GroupCreationTests extends TestBase {
     @ParameterizedTest
     @MethodSource("groupProvider")
     public void canCreateMultipleGroups(Group group) {
-        var groupList = app.groups().getList();
+        var groupList = app.jdbc().getGroupList();
         app.groups().createGroup(group);
-        var actualGroupList = app.groups().getList();
+        var actualGroupList = app.jdbc().getGroupList();
         Comparator<Group> compareById = ((group1, group2) -> Integer.parseInt(group1.id()) - Integer.parseInt(group2.id()));
         actualGroupList.sort(compareById);
-        groupList.add(group.withId(actualGroupList.get(actualGroupList.size() - 1).id()).withFooter("").withHeader(""));
+        var maxId = actualGroupList.get(actualGroupList.size() - 1).id();
+        groupList.add(group.withId(maxId));
         groupList.sort(compareById);
         Assertions.assertEquals(groupList, actualGroupList);
     }
