@@ -18,4 +18,13 @@ public class GroupData {
     @Column(name = "group_footer")
     public String footer;
 
+    public GroupData() {
+    }
+
+    public GroupData(int id, String name, String footer, String header) {
+        this.id = id;
+        this.name = name;
+        this.footer = footer;
+        this.header = header;
+    }
 }
