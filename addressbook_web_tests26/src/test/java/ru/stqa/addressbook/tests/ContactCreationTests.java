@@ -28,13 +28,14 @@ public class ContactCreationTests extends TestBase{
     @ParameterizedTest
     @MethodSource("contactProvider")
     public void canCreateMultipleContacts(Contact contact){
-        var contactsList=app.contacts().getList();
+        var contactsList=app.hbm().getContactList();
         Comparator<Contact> compareById=(c1,c2)->Integer.parseInt(c1.id())-Integer.parseInt(c2.id());
         app.contacts().createContact(contact);
-        var actualContactList=app.contacts().getList();
+        var actualContactList=app.hbm().getContactList();
         actualContactList.sort(compareById);
         var newContactList=new ArrayList<>(contactsList);
-        newContactList.add(contact.withId(actualContactList.get(actualContactList.size()-1).id()).withPhoto(""));
+        String maxId = actualContactList.get(actualContactList.size() - 1).id();
+        newContactList.add(contact.withId(maxId).withPhoto(""));
         newContactList.sort(compareById);
         Assertions.assertEquals(newContactList,actualContactList);
     }

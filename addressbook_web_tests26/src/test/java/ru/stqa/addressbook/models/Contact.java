@@ -26,6 +26,9 @@ public record Contact(String id,
         return new Contact(this.id, this.firstName, this.lastName, this.address, this.email, mobile, this.photo);
     }
     public Contact withPhoto(String photo){
-        return new Contact(this.id, this.firstName, this.lastName, this.address, this.email, mobile, photo);
+        return new Contact(this.id, this.firstName, this.lastName, this.address, this.email, this.mobile, photo);
+    }
+    public Contact withEmail(String email){
+        return new Contact(this.id, this.firstName, this.lastName, this.address, email, this.mobile, this.photo);
     }
 }

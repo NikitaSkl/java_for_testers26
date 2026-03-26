@@ -95,6 +95,7 @@ public class ContactHelper extends HelperBase {
     }
 
     private void attach(By locator,String photo) {
+        if (!"".equals(photo))
         type(locator, Paths.get(photo).toAbsolutePath().toString());
     }
 

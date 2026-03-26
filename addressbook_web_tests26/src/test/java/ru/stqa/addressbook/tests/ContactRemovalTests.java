@@ -10,21 +10,21 @@ public class ContactRemovalTests extends TestBase{
 
     @Test
     public void canRemoveContact(){
-        if (!app.contacts().isContactPresent()){
-            app.contacts().createContact(new Contact());
+        if (app.hbm().getContactCount()==0){
+            app.hbm().createContact(new Contact());
         }
-        var contactsList=app.contacts().getList();
+        var contactsList=app.hbm().getContactList();
         var random=new Random();
         var index= random.nextInt(contactsList.size());
         app.contacts().removeContact(contactsList.get(index));
-        var actualContactList=app.contacts().getList();
+        var actualContactList=app.hbm().getContactList();
         var newContactList=contactsList;
         newContactList.remove(index);
         Assertions.assertEquals(newContactList,actualContactList);
     }
     @Test
     public void canRemoveAllContacts(){
-        if (!app.contacts().isContactPresent()){
+        if (app.jdbc().getContactList().size()==0){
             app.contacts().createContact(new Contact());
         }
         app.contacts().removeAllContacts();
