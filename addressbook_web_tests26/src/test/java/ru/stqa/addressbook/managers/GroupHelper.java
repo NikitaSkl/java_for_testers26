@@ -1,6 +1,7 @@
 package ru.stqa.addressbook.managers;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import ru.stqa.addressbook.models.Group;
 
@@ -40,6 +41,13 @@ public class GroupHelper extends HelperBase {
         returnToGroupPage();
     }
 
+    public void removeAllGroups() {
+        openGroupsPage();
+        selectAllGroups();
+        deleteSelectedGroups();
+        returnToGroupPage();
+    }
+
     private void clearGroupFooter() {
         manager.driver.findElement(By.name("group_footer")).clear();
     }
@@ -61,6 +69,7 @@ public class GroupHelper extends HelperBase {
     }
 
     public void selectGroup(Group group) {
+        manager.wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(String.format("//input[@value='New group']"))));
         click(By.xpath(String.format("//input[@value='%s']",group.id())));
     }
 
@@ -83,6 +92,11 @@ public class GroupHelper extends HelperBase {
             manager.wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("groups")));
             click(By.linkText("groups"));
         }
+        refreshPage();
+    }
+
+    private void refreshPage() {
+        manager.driver.navigate().refresh();
     }
 
     private void submitGroupCreation() {
@@ -108,17 +122,10 @@ public class GroupHelper extends HelperBase {
         return manager.driver.findElements(By.name("selected[]")).size();
     }
 
-    public void removeAllGroups() {
-        openGroupsPage();
-        selectAllGroups();
-        deleteSelectedGroups();
-    }
-
     private void selectAllGroups() {
-        var checkboxes=manager.driver.findElements(By.name("selected[]"));
-        for (var checkbox:checkboxes){
-            checkbox.click();
-        }
+        manager.driver
+                .findElements(By.name("selected[]"))
+                .forEach(WebElement::click);
     }
 
     public List<Group> getList() {
