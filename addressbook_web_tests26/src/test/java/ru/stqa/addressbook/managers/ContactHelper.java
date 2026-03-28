@@ -100,7 +100,7 @@ public class ContactHelper extends HelperBase {
     }
 
     private void returnToHomePage() {
-        click(By.linkText("home page"));
+        manager.wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("home page"))).click();
     }
 
     private void submitContactCreation() {
