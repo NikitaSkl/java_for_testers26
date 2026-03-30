@@ -1,0 +1,38 @@
+package ru.stqa.mantis.managers;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
+import java.util.Properties;
+
+public class ApplicationManager {
+    private WebDriver driver;
+    private String browser;
+    private Properties properties;
+    private LoginHelper session;
+
+    public void init(String browser, Properties properties) {
+        this.browser = browser;
+        this.properties = properties;
+
+    }
+    public LoginHelper session(){
+        if (session == null) {
+            session=new LoginHelper(this);
+        }
+        return session;
+    }
+
+    public WebDriver driver() {
+        if (driver == null) {
+            if ("chrome".equals(browser)) {
+                driver = new ChromeDriver();
+            } else if ("edge".equals(browser)) {
+                driver = new EdgeDriver();
+            } else throw new IllegalArgumentException(String.format("Unknown browser: %s", browser));
+            Runtime.getRuntime().addShutdownHook(new Thread(driver::quit));
+            driver.get(properties.getProperty("web.baseUrl"));
+        }
+        return driver;
+    }
+}
