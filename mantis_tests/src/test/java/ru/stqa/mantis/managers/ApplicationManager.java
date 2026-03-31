@@ -10,6 +10,7 @@ public class ApplicationManager {
     private String browser;
     private Properties properties;
     private LoginHelper session;
+    private HttpHelper http;
 
     public void init(String browser, Properties properties) {
         this.browser = browser;
@@ -23,6 +24,13 @@ public class ApplicationManager {
         return session;
     }
 
+    public HttpHelper http() {
+        if (http==null){
+            http=new HttpHelper(this);
+        }
+        return http;
+    }
+
     public WebDriver driver() {
         if (driver == null) {
             if ("chrome".equals(browser)) {
@@ -34,5 +42,8 @@ public class ApplicationManager {
             driver.get(properties.getProperty("web.baseUrl"));
         }
         return driver;
+    }
+    public String getProperty(String name){
+        return properties.getProperty(name);
     }
 }
