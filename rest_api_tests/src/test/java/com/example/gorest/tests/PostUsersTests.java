@@ -1,6 +1,5 @@
 package com.example.gorest.tests;
 
-import com.example.gorest.common.CommonFunctions;
 import com.example.gorest.pojo.UserRequestData;
 import com.example.gorest.pojo.UserResponseData;
 import org.junit.jupiter.api.AfterEach;
@@ -8,19 +7,15 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.List;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 
 public class PostUsersTests extends TestBase {
     private Integer createdUserId;
 
     @ParameterizedTest
-    @MethodSource("randomRequestUserProvider")
+    @MethodSource("com.example.gorest.provider.UserRequestDataProviders#randomRequestUserProvider")
     public void postToAddNewUser(UserRequestData randomUser) {
         UserResponseData responseData = given()
                 .header("Authorization", "Bearer " + TOKEN)
@@ -55,9 +50,10 @@ public class PostUsersTests extends TestBase {
         Assertions.assertEquals(responseData, fetchedUser);
 
     }
+
     @ParameterizedTest
-    @MethodSource("invalidRequestUserProvider")
-    public void postToAddInvalidUser(UserRequestData invalidUser) {
+    @MethodSource("com.example.gorest.provider.UserRequestDataProviders#invalidRequestUserProvider")
+    public void postToAddInvalidUser(UserRequestData invalidUser, String emptyField, String errorMessage) {
         given()
                 .header("Authorization", "Bearer " + TOKEN)
                 .header("Content-Type", "application/json")
@@ -67,9 +63,9 @@ public class PostUsersTests extends TestBase {
                 .then()
                 .log().all()
                 .statusCode(422)
-                .body("field",equalTo("name"))
+                .body("[0].field", equalTo(emptyField))
                 .and()
-                .body("message",equalTo("can't be blank"));
+                .body("[0].message", equalTo(errorMessage));
     }
 
     @AfterEach
@@ -83,28 +79,5 @@ public class PostUsersTests extends TestBase {
                     .then()
                     .statusCode(204);
         }
-    }
-
-    public static List<UserRequestData> randomRequestUserProvider() {
-        Supplier<UserRequestData> randomUserSupplier = () -> new UserRequestData()
-                .setName(CommonFunctions.randomString(9))
-                .setEmail(String.format("%s@gorest.test", CommonFunctions.randomString(7)))
-                .setGender("male")
-                .setStatus("active");
-        return Stream.generate(randomUserSupplier).limit(3).collect(Collectors.toList());
-    }
-
-    public static List<UserRequestData> invalidRequestUserProvider() {
-        var list = List.of(new UserRequestData()
-                        //.setEmail(String.format("%s@gorest.test", CommonFunctions.randomString(7)))
-                        //.setGender("male")
-                        //.setStatus("active")
-                ,
-                new UserRequestData()
-                        .setName(CommonFunctions.randomString(7))
-                        .setEmail("")
-                        .setGender("male")
-                        .setStatus("active"));
-        return list;
     }
 }
