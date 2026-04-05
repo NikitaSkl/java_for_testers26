@@ -1,5 +1,6 @@
 package com.example.gorest.tests;
 
+import com.example.gorest.clients.UserClient;
 import com.example.gorest.pojo.UserRequestData;
 import com.example.gorest.pojo.UserResponseData;
 import org.junit.jupiter.api.AfterEach;
@@ -11,20 +12,15 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
-public class PostUsersTests extends TestBase {
-    private Integer createdUserId;
+public class PostUsersTests extends TestBase{
+    private UserResponseData createdUser;
 
     @ParameterizedTest
     @MethodSource("com.example.gorest.provider.UserRequestDataProviders#randomRequestUserProvider")
     public void postToAddNewUser(UserRequestData randomUser) {
-        UserResponseData responseData = given()
-                .header("Authorization", "Bearer " + TOKEN)
-                .header("Content-Type", "application/json")
-                .body(randomUser)
-                .when()
-                .post("/users")
+        UserResponseData responseData = UserClient.postNewUser(randomUser)
                 .then()
-                .log().all()
+                .log().ifError()
                 .statusCode(201)
                 .body("id", notNullValue())
                 .body("name", equalTo(randomUser.getName()))
@@ -34,13 +30,9 @@ public class PostUsersTests extends TestBase {
                 .extract()
                 .as(UserResponseData.class);
 
-        createdUserId = responseData.getId();
+        createdUser = responseData;
 
-        UserResponseData fetchedUser = given()
-                .header("Authorization", "Bearer " + TOKEN)
-                .pathParam("userId", createdUserId)
-                .when()
-                .get("/users/{userId}")
+        UserResponseData fetchedUser = UserClient.getUser(responseData)
                 .then()
                 .log().ifError()
                 .statusCode(200)
@@ -54,12 +46,7 @@ public class PostUsersTests extends TestBase {
     @ParameterizedTest
     @MethodSource("com.example.gorest.provider.UserRequestDataProviders#invalidRequestUserProvider")
     public void postToAddInvalidUser(UserRequestData invalidUser, String emptyField, String errorMessage) {
-        given()
-                .header("Authorization", "Bearer " + TOKEN)
-                .header("Content-Type", "application/json")
-                .body(invalidUser)
-                .when()
-                .post("/users")
+        UserClient.postNewUser(invalidUser)
                 .then()
                 .log().all()
                 .statusCode(422)
@@ -70,12 +57,8 @@ public class PostUsersTests extends TestBase {
 
     @AfterEach
     public void cleanup() {
-        if (createdUserId != null) {
-            given()
-                    .header("Authorization", "Bearer " + TOKEN)
-                    .pathParam("userId", createdUserId)
-                    .when()
-                    .delete("/users/{userId}")
+        if (createdUser != null) {
+            UserClient.deleteUser(createdUser)
                     .then()
                     .statusCode(204);
         }

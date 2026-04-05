@@ -1,7 +1,9 @@
 package com.example.gorest.tests;
 
+import com.example.gorest.clients.UserClient;
 import com.example.gorest.pojo.UserResponseData;
 import io.restassured.common.mapper.TypeRef;
+import io.restassured.response.Response;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -9,32 +11,14 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 
-public class GetUsersTests extends TestBase {
-
+public class GetUsersTests extends TestBase{
+    private static Random random = new Random();
     @Test
     public void getUserList() {
-        given()
-                .header("Authorization", "Bearer " + TOKEN)
-                .when()
-                .get("/users")
-                .then()
-                .log().all()
-                .statusCode(200)
-                .body("size()", greaterThan(0));
-    }
-
-    @Test
-    public void getUserListFromPage() {
-        given()
-                .header("Authorization", "Bearer " + TOKEN)
-                .queryParam("page", 1)
-                .queryParam("per_page", 15)
-                .when()
-                .get("/users")
+        UserClient.getUsersList()
                 .then()
                 .log().ifError()
                 .statusCode(200)
@@ -42,13 +26,19 @@ public class GetUsersTests extends TestBase {
     }
 
     @Test
+    public void getUserListFromPage() {
+        var pageNumber=random.nextInt(1,10);
+        var pageSize=random.nextInt(1,100);
+        Response response=UserClient.getUsersListPerPage(pageNumber, pageSize);
+        response.then()
+                .log().ifError()
+                .statusCode(200)
+                .body("size()", greaterThan(0));
+    }
+
+    @Test
     public void getByExistentUserId() {
-        List<UserResponseData> usersList = given()
-                .header("Authorization", "Bearer " + TOKEN)
-                .queryParam("page", 1)
-                .queryParam("per_page", 50)
-                .when()
-                .get("/users")
+        List<UserResponseData> usersList = UserClient.getUsersList()
                 .then()
                 .log().ifError()
                 .statusCode(200)
@@ -59,11 +49,7 @@ public class GetUsersTests extends TestBase {
         UserResponseData randomUser = usersList.get(new Random()
                 .nextInt(usersList.size()));
 
-        given()
-                .header("Authorization", "Bearer " + TOKEN)
-                .pathParam("userId", randomUser.getId())
-                .when()
-                .get("/users/{userId}")
+        UserClient.getUser(randomUser)
                 .then()
                 .log().ifError()
                 .statusCode(200)
@@ -72,11 +58,7 @@ public class GetUsersTests extends TestBase {
 
     @Test
     public void getByNonExistentUserId_returns404() {
-        given()
-                .header("Authorization", "Bearer " + TOKEN)
-                .pathParam("userId", Integer.MAX_VALUE)
-                .when()
-                .get("/users/{userId}")
+        UserClient.getNonExistentUser()
                 .then()
                 .log().ifError()
                 .statusCode(404)
@@ -85,12 +67,9 @@ public class GetUsersTests extends TestBase {
 
     @Test
     public void getUserList_returns401() {
-        given()
-                .header("Authorization", "Bearer " + "Invalid token value")
-                .when()
-                .get("/users")
+        UserClient.getUsersListWithInvalidToken()
                 .then()
-                .log().all()
+                .log().ifError()
                 .statusCode(401)
                 .body("message", equalTo("Invalid token"))
                 .body("size()", greaterThan(0));
@@ -98,12 +77,7 @@ public class GetUsersTests extends TestBase {
 
     @Test
     public void getInactiveUserByExistentId() {
-        List<UserResponseData> usersList = given()
-                .header("Authorization", "Bearer " + TOKEN)
-                .queryParam("page", 1)
-                .queryParam("per_page", 100)
-                .when()
-                .get("/users")
+        List<UserResponseData> usersList =UserClient.getUsersListPerPage(random.nextInt(1,10), random.nextInt(1,100))
                 .then()
                 .log().ifError()
                 .statusCode(200)
@@ -115,24 +89,18 @@ public class GetUsersTests extends TestBase {
 
         List<UserResponseData> inactiveUsersList = usersList
                 .stream()
-                .filter(user -> {
-                    return "inactive".equals(user.getStatus());
-                })
+                .filter(user -> "inactive".equals(user.getStatus()))
                 .collect(Collectors.toList());
 
         Assertions.assertTrue(!inactiveUsersList.isEmpty(), "Inactive users list should not be empty");
 
-        Integer randomUserId = inactiveUsersList.get(new Random().nextInt(inactiveUsersList.size())).getId();
+        UserResponseData randomUser = inactiveUsersList.get(new Random().nextInt(inactiveUsersList.size()));
 
-        given()
-                .header("Authorization", "Bearer " + TOKEN)
-                .pathParam("userId", randomUserId)
-                .when()
-                .get("/users/{userId}")
+        UserClient.getUser(randomUser)
                 .then()
-                .log().all()
+                .log().ifError()
                 .statusCode(200)
-                .body("id", equalTo(randomUserId))
+                .body("id", equalTo(randomUser.getId()))
                 .body("status", equalTo("inactive"));
     }
 }

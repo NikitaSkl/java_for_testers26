@@ -2,7 +2,8 @@ package com.example.gorest.tests;
 
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+
+import static io.restassured.RestAssured.given;
 
 public class TestBase {
     final static String TOKEN = System.getProperty("api.token");
@@ -12,4 +13,5 @@ public class TestBase {
         RestAssured.baseURI = System.getProperty("api.baseUri");
         RestAssured.basePath = System.getProperty("api.basePath");
     }
+
 }

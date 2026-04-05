@@ -1,5 +1,6 @@
 package com.example.gorest.tests;
 
+import com.example.gorest.clients.UserClient;
 import com.example.gorest.pojo.UserResponseData;
 import io.restassured.common.mapper.TypeRef;
 import org.junit.jupiter.api.Assertions;
@@ -15,12 +16,9 @@ import static org.hamcrest.Matchers.greaterThan;
 public class DeleteUserTests extends TestBase{
     @Test
     public void deleteExistentUser() {
-        List<UserResponseData> usersList = given()
-        .header("Authorization", "Bearer " + TOKEN)
-                .when()
-                .get("/users")
+        List<UserResponseData> usersList = UserClient.getUsersList()
                 .then()
-                .log().all()
+                .log().ifError()
                 .statusCode(200)
                 .body("size()", greaterThan(0))
                 .extract()
@@ -29,25 +27,18 @@ public class DeleteUserTests extends TestBase{
 
         Assertions.assertTrue(!usersList.isEmpty());
 
-        var userIdForRemoval = usersList.get(new Random()
-                .nextInt(usersList.size())).getId();
+        var userForRemoval = usersList.get(new Random()
+                .nextInt(usersList.size()));
 
-        given()
-                .header("Authorization", "Bearer " + TOKEN)
-                .pathParam("userId", userIdForRemoval)
-                .when()
-                .delete("/users/{userId}")
+        UserClient.deleteUser(userForRemoval)
                 .then()
                 .statusCode(204);
 
-        given()
-                .header("Authorization", "Bearer " + TOKEN)
-                .pathParam("userId", userIdForRemoval)
-                .when()
-                .get("/users/{userId}")
+        UserClient.getUser(userForRemoval)
                 .then()
                 .log().ifError()
                 .statusCode(404)
                 .body("message", equalTo("Resource not found"));
     }
+
 }
