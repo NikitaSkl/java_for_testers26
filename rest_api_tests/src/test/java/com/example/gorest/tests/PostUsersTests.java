@@ -16,7 +16,7 @@ public class PostUsersTests extends TestBase{
     private UserResponseData createdUser;
 
     @ParameterizedTest
-    @MethodSource("com.example.gorest.provider.UserRequestDataProviders#randomRequestUserProvider")
+    @MethodSource("com.example.gorest.provider.UserRequestDataProviders#randomUsersProvider")
     public void postToAddNewUser(UserRequestData randomUser) {
         UserResponseData responseData = UserClient.postNewUser(randomUser)
                 .then()
@@ -44,7 +44,7 @@ public class PostUsersTests extends TestBase{
     }
 
     @ParameterizedTest
-    @MethodSource("com.example.gorest.provider.UserRequestDataProviders#invalidRequestUserProvider")
+    @MethodSource("com.example.gorest.provider.UserRequestDataProviders#invalidUsersProvider")
     public void postToAddInvalidUser(UserRequestData invalidUser, String emptyField, String errorMessage) {
         UserClient.postNewUser(invalidUser)
                 .then()
