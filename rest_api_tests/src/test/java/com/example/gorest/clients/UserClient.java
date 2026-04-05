@@ -1,5 +1,6 @@
 package com.example.gorest.clients;
 
+import com.example.gorest.pojo.UserPatchRequest;
 import com.example.gorest.pojo.UserRequestData;
 import com.example.gorest.pojo.UserResponseData;
 import io.restassured.response.Response;
@@ -53,6 +54,15 @@ public class UserClient{
                 .body(user)
                 .when()
                 .post("/users");
+    }
+    public static Response patchUser(UserResponseData userToPatch, UserPatchRequest userPatchData) {
+        return given()
+                .header("Authorization", "Bearer " + TOKEN)
+                .header("Content-Type", "application/json")
+                .pathParam("userId", userToPatch.getId())
+                .body(userPatchData)
+                .when()
+                .patch("/users/{userId}");
     }
 
     public static Response deleteUser(UserResponseData userForRemoval) {
