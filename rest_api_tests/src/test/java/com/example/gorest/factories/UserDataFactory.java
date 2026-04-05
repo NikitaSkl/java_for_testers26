@@ -1,6 +1,7 @@
 package com.example.gorest.factories;
 
 
+import com.example.gorest.pojo.UserPatchRequest;
 import com.example.gorest.pojo.UserRequestData;
 
 import java.util.Random;
@@ -26,6 +27,10 @@ public class UserDataFactory {
     }
     public UserRequestData userWithBlankStatus(){
         return validUser().setStatus("");
+    }
+    public UserPatchRequest nameUpdate() {
+        return new UserPatchRequest()
+                .setName(generateName());
     }
 
     private String generateName() {
