@@ -1,0 +1,58 @@
+plugins {
+    id 'java'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+configurations {
+    agent {
+        canBeResolved = true
+        canBeConsumed = true
+    }
+}
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'io.rest-assured:rest-assured:5.5.0'
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.16.0'
+    testImplementation 'io.rest-assured:json-schema-validator:5.5.0'
+    agent "org.aspectj:aspectjweaver:1.9.20.1"
+    testImplementation platform("io.qameta.allure:allure-bom:2.24.0")
+    testImplementation "io.qameta.allure:allure-junit5"
+}
+
+def props = new Properties()
+def propsFile = file("local.properties")
+if (propsFile.exists()) {
+    props.load(new FileInputStream(propsFile))
+}
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+    testLogging {
+        events "PASSED", "FAILED", "SKIPPED"
+        showStandardStreams = true
+        exceptionFormat = 'full'
+    }
+    jvmArgs = [ "-javaagent:${configurations.agent.singleFile}" ]
+    systemProperty("api.token", props.getProperty("api.token"))
+    systemProperty("api.baseUri", props.getProperty("api.baseUri"))
+    systemProperty("api.basePath", props.getProperty("api.basePath"))
+}
+test {
+
+}
+tasks.register('positiveTests', Test) {
+    useJUnitPlatform {
+        includeTags 'positive'
+    }
+}
+tasks.register('negativeTests', Test) {
+    useJUnitPlatform {
+        includeTags 'negative'
+    }
+}
